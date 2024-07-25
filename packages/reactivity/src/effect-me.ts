@@ -1,4 +1,7 @@
-type KeyToDepMap = Map<any, ReactiveEffect>
+import { isArray } from "@vue/shared"
+import { Dep, createDep } from "./dep-me"
+
+type KeyToDepMap = Map<any, Dep>
 /**
  * 收集所有依赖的 WeakMap 实例：
  * 1. `key`：响应性对象
@@ -24,7 +27,7 @@ export function effect<T = any>(fn: () => T) {
 /**
 * 单例的，当前正在激活的 effect
 */
-export let activeEffect: ReactiveEffect | undefined
+export let activeEffect: ReactiveEffect | any
 
 /**
 * 响应性触发依赖时的执行类
@@ -58,10 +61,20 @@ export function track(target: object, key: unknown) {
     depsMap = new Map()
     targetMap.set(target, depsMap)
   }
-  // 为指定 map，指定key 设置回调函数
-  depsMap.set(key, activeEffect)
-  console.log('targetMap', targetMap);
+  
+  let dep = depsMap.get(key)
+  if (!dep) {
+    dep = createDep()
+    depsMap.set(key, dep)
+  }
+
+  trackEffects(dep)
 }
+
+export function trackEffects (dep: Dep) {
+  dep.add(activeEffect!)
+}
+
 
 /**
  * 派发更新的方法
@@ -75,12 +88,21 @@ export function trigger(
   key?: unknown,
   newValue?: unknown
 ) {
-  console.log('trigger: 触发依赖')
   const depsMap = targetMap.get(target)
   if (!depsMap) return
-  // 依据 key，从 depsMap 中取出 value，该 value 是一个 ReactiveEffect 类型的数据
-	const effect = depsMap.get(key) as ReactiveEffect
-  if (!effect) return
-	// 执行 effect 中保存的 fn 函数
-	effect.fn()
+  const dep: Dep | undefined = depsMap.get(key)
+  if (!dep) return
+  triggerEffects(dep)
+}
+
+export function triggerEffects(dep: Dep) {
+  const effects = isArray(dep) ? dep : [...dep]
+  for (const effect of effects) {
+    triggerEffect(effect)
+  }
+}
+
+export function triggerEffect(effect: ReactiveEffect) {
+  effect.run()
+  console.log('trigger: 触发依赖')
 }
