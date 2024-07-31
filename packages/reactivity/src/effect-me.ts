@@ -103,6 +103,6 @@ export function triggerEffects(dep: Dep) {
 }
 
 export function triggerEffect(effect: ReactiveEffect) {
-  effect.run()
   console.log('trigger: 触发依赖')
+  effect.run()
 }
