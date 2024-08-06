@@ -55,7 +55,7 @@ class RefImpl<T> {
   }
 }
 
-function trackRefValue(ref) {
+export function trackRefValue(ref) {
   if (activeEffect) {
     trackEffects(ref.dep || (ref.dep = createDep()))
   }

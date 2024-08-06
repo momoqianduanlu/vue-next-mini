@@ -1,5 +1,6 @@
 import { isArray } from "@vue/shared"
 import { Dep, createDep } from "./dep-me"
+import { ComputedRefImpl } from "./computed-me"
 
 type KeyToDepMap = Map<any, Dep>
 /**
@@ -33,6 +34,7 @@ export let activeEffect: ReactiveEffect | any
 * 响应性触发依赖时的执行类
 */
 export class ReactiveEffect<T = any> {
+  computed?: ComputedRefImpl<T>
   constructor(public fn: () => T) {}
 
   run() {
