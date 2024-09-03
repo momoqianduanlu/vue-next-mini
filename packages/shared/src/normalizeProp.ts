@@ -32,3 +32,27 @@ export function normalizeClass(value: unknown): string {
 	// 去左右空格
 	return res.trim()
 }
+
+
+// export function normalizedClass(value: unknown): string {
+// 	let res = ''
+
+// 	if (isString(value)) {
+// 		res = value
+// 	} else if (isArray(value)) {
+// 		for (let i = 0; i < value.length; i++) {
+// 			const normalize  = normalizedClass(value[i])
+// 			if (normalize) {
+// 				res += normalize + ' '
+// 			}
+// 		}
+// 	} else if (isObject(value)) {
+// 		for (const name in value as object) {
+// 			if ((value as object)[name]) {
+// 				res += name + ' '
+// 			}
+// 		}
+// 	}
+
+// 	return res.trim()
+// }

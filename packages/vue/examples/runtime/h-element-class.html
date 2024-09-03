@@ -21,13 +21,23 @@
 <script>
   const { h, render } = Vue
 
+  // const vnode = h('div', {
+  //   class: {
+  //     'red': true
+  //   }
+  // }, '增强的 class')
+
   const vnode = h('div', {
-    class: {
-      'red': true
-    }
+    class: [
+      {
+        'red': true
+      },
+      'test'
+    ]
   }, '增强的 class')
 
   console.log(vnode);
+  render(vnode, document.getElementById('app'))
 </script>
 
 </html>
