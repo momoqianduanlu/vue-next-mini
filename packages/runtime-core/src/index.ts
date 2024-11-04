@@ -1,7 +1,7 @@
 export { queuePreFlushCb } from './scheduler'
 export { watch } from './apiWatch'
 // export { h } from './h'
-export { h } from './h-me'
+export { h } from './h'
 export {
 	Fragment,
 	Text,
@@ -9,4 +9,4 @@ export {
 	createElementVNode,
 	createCommentVNode
 } from './vnode'
-export { createRenderer } from './renderer'
+export { createRenderer } from './renderer-me'

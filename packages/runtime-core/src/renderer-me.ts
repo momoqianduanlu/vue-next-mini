@@ -36,7 +36,7 @@ export interface RendererOptions {
   createComment(text: string)
 }
 
-export function createRender(options: RendererOptions) {
+export function createRenderer(options: RendererOptions) {
   return baseCreateRenderer(options)
 }
 
@@ -92,6 +92,16 @@ function baseCreateRenderer(options: RendererOptions): any {
       return
     }
 
+    /**
+     * 判断是否为相同类型节点
+     */
+    debugger
+    if (oldVNode && !isSameVNodeType(oldVNode, newVNode)) {
+      unmount(oldVNode)
+      // 将vnode置为null，在下面的 processElement 函数中才会执行mountElement
+      oldVNode = null
+    }
+
     const { type, shapeFlag } = newVNode
     switch (type) {
       case Text:
@@ -113,12 +123,21 @@ function baseCreateRenderer(options: RendererOptions): any {
     }
   }
 
+  const unmount = vnode => {
+    hostRemove(vnode.el!)
+  }
+
   const render = (vnode, container) => {
     if (vnode === null) {
       // TODO: 卸载
+      if (container._vnode) {
+        unmount(container._vnode)
+      }
     } else {
-      patch(container._vnode, vnode, container)
+      // 打补丁（包括了挂载和更新）
+      patch(container._vnode || null, vnode, container)
     }
+    container._vnode = vnode
   }
 
   return {
